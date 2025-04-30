@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>जन्मदिवसस्य शुभकामना</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            perspective: 1000px;
+            padding: 15px;
+        }
+        
+        .card-container {
+            width: 100%;
+            max-width: 700px;
+            height: auto;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+        }
+        
+        .card-container.flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .invitation-card {
+            width: 100%;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: absolute;
+            backface-visibility: hidden;
+            overflow-y: auto;
+            height: auto;
+            min-height: 500px;
+            max-height: 90vh;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        
+        .invitation-card.back {
+            transform: rotateY(180deg);
+        }
+        
+        .invitation-card::before, .invitation-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 20px;
+            background: #fff;
+        }
+        
+        .invitation-card::before {
+            left: 0;
+            border-top: 2px solid #e0e0e0;
+        }
+        
+        .invitation-card::after {
+            right: 0;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header {
+            margin-bottom: 15px;
+        }
+        
+        .header img {
+            width: 40px;
+            height: auto;
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            margin: 8px 0;
+        }
+        
+        .invitation-title {
+            font-size: 28px;
+            color: #800000;
+            margin: 15px 0;
+        }
+        
+        .footer {
+            margin-top: 15px;
+            font-size: 16px;
+        }
+        
+        .flower {
+            width: 30px;
+            height: auto;
+            position: absolute;
+            z-index: 1;
+        }
+        
+        .flower-left {
+            top: 15px;
+            left: 15px;
+        }
+        
+        .flower-right {
+            top: 15px;
+            right: 15px;
+        }
+        
+        .flower-bottom-left {
+            bottom: 15px;
+            left: 15px;
+        }
+        
+        .flower-bottom-right {
+            bottom: 15px;
+            right: 15px;
+        }
+        
+        #contact {
+            text-align: center;
+            font-size: smaller;
+        }
+        
+        .person-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 3px solid #800000;
+            animation: pulse 3s infinite ease-in-out, color-glow 8s infinite linear;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes color-glow {
+            0% {
+                box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); /* Orange */
+            }
+            25% {
+                box-shadow: 0 0 15px rgba(255, 255, 0, 0.8); /* Yellow */
+            }
+            50% {
+                box-shadow: 0 0 15px rgba(0, 0, 255, 0.8); /* Blue */
+            }
+            75% {
+                box-shadow: 0 0 15px rgba(0, 128, 0, 0.8); /* Green */
+            }
+            100% {
+                box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); /* Back to Orange */
+            }
+        }
+        
+        .congratulation-message {
+            font-size: 16px;
+            line-height: 1.5;
+            margin: 15px 0;
+            padding: 0 10px;
+            text-align: justify;
+        }
+        
+        /* Flip icon styling */
+        .flip-icon {
+            position: absolute;
+            bottom: 12px;
+            left: 75%; /* Position 75% from the left */
+            right: auto;
+            width: 25px;
+            height: 25px;
+            background-color: rgba(128, 0, 0, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            cursor: move; /* Changed to move cursor to indicate it's draggable */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            user-select: none; /* Prevent text selection during drag */
+            touch-action: none; /* Prevent scrolling during touch on mobile */
+        }
+        
+        .flip-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+            pointer-events: none; /* Make sure click events work properly when clicking on SVG */
+        }
+        
+        .language-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #800000;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 2;
+        }
+        
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .invitation-card {
+                padding: 12px;
+                min-height: 400px;
+            }
+            
+            .invitation-title {
+                font-size: 24px;
+                margin: 10px 0;
+            }
+            
+            .person-photo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .congratulation-message {
+                font-size: 14px;
+                padding: 0 5px;
+            }
+            
+            .flower {
+                width: 25px;
+            }
+            
+            .flip-icon {
+                bottom: 10px;
+                right: 10px;
+                width: 22px;
+                height: 22px;
+            }
+            
+            .flip-icon svg {
+                width: 14px;
+                height: 14px;
+            }
+            
+            .header img {
+                width: 35px;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .footer {
+                font-size: 14px;
+            }
+        }
+        
+        /* Small screen adjustments */
+        @media (max-width: 480px) {
+            .invitation-title {
+                font-size: 22px;
+            }
+            
+            .congratulation-message {
+                font-size: 13px;
+            }
+            
+            .person-photo {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .flower {
+                width: 20px;
+            }
+            
+            .header h1 {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container">
+        <!-- Front of card (Nepali) -->
+        <div class="invitation-card front">
+                <div class="header">
+                <img src="ganesha.png" alt="Ganesha">
+                          </div>
+            <div class="content">
+                <p class="invitation-title">Congratulation & Best Wishes</p>
+                <img src="bj.jpeg" alt="विजयप्रसाद मिश्र" class="person-photo">
+                <p><b>Shishir & Susmita</b>,</p>
+                
+                <p class="congratulation-message">
+                    On this auspicious day of Akshaya Tritiya, when Lord Shiva and Goddess Parvati were married, may your wedding be as timeless and immortal as the love and eternal unity of Shiva and Parvati. May your journey together be continuous, unobstructed, and auspicious through the essence of Truth, Goodness, and Beauty (Satyam Shivam Sundaram). May the combined powers of Goddesses Mahalakshmi, Mahasaraswati, and Mahakali bless your household to become the living embodiment of an ideal married life. Heartfelt best wishes for a blissful married life.<br> Om Peace, Peace, Peace!!!
+
+                </p>
+            </div>
+            <div class="footer">
+                <u>With Love</u><br><span id="contact">  Constitutional Bench+, Supreme Court<br> 2025, April 30</span>
+            </div>
+            <img src="flower.png" alt="Flower" class="flower flower-left">
+            <img src="flower.png" alt="Flower" class="flower flower-right">
+            <img src="flower.png" alt="Flower" class="flower flower-bottom-left">
+            <img src="flower.png" alt="Flower" class="flower flower-bottom-right">
+            
+            <div class="flip-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"/>
+                </svg>
+            </div>
+        </div>
+        
+        <!-- Back of card (Sanskrit) -->
+        <div class="invitation-card back">
+             <div class="header">
+                <img src="ganesha.png" alt="Ganesha">
+                <h1></h1>
+            </div>
+            <div class="content">
+                <p class="invitation-title">॥ अभिनन्दनम् शुभाशंसाश्च ॥</p>
+                <img src="bj.jpeg" alt="विजयप्रसाद मिश्र" class="person-photo">
+                <p><b>शिशिर-सुष्मिता<br> </b> </p>
+                
+                <p class="congratulation-message">
+                    
+                    शिवपार्वत्योः विवाहदिवसे अस्मिन् अक्षयतृतीयायाः पावनपर्वणि भवतोः विवाहः शिवपार्वत्योः प्रेमवत् अनन्तैक्यवत् च कालातीतः अमरश्च भवतु। सत्यं शिवं सुन्दरम् भावेन भवतोः यात्रा निरन्तरा, निर्विघ्ना मङ्गलमयी च भवतु। महालक्ष्मी, महासरस्वती, महाकाली देवीनां त्रिशक्तिना भवतोः गृहस्थाश्रमः आदर्शदाम्पत्यजीवनस्य साक्षात्प्रतिमूर्तिः भवतु। सुखमयवैवाहिकजीवनस्य हार्दिकशुभकामनाः। <br>
+                   <center>ॐ पूर्णमदः पूर्णमिदं पूर्णात् पूर्णमुदच्यते। पूर्णस्य पूर्णमादाय पूर्णमेवावशिष्यते॥ <br>ॐ शान्तिः शान्तिः शान्तिः॥</center>
+                   
+                </p>
+            </div>
+            <div class="footer">
+                <u>सप्रेम</u><br><span id="contact">  संवैधानिक इजलास+, सर्वोच्च अदालत<br>२०८२।०१।१७, अक्षयतृतीया</span>
+            </div>
+            <img src="flower.png" alt="Flower" class="flower flower-left">
+            <img src="flower.png" alt="Flower" class="flower flower-right">
+            <img src="flower.png" alt="Flower" class="flower flower-bottom-left">
+            <img src="flower.png" alt="Flower" class="flower flower-bottom-right">
+            
+            <div class="flip-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M19 8l-4 4h3c0 3.31-2.69 6-6 6-1.01 0-1.97-.25-2.8-.7l-1.46 1.46C8.97 19.54 10.43 20 12 20c4.42 0 8-3.58 8-8h3l-4-4zM6 12c0-3.31 2.69-6 6-6 1.01 0 1.97.25 2.8.7l1.46-1.46C15.03 4.46 13.57 4 12 4c-4.42 0-8 3.58-8 8H1l4 4 4-4H6z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardContainer = document.querySelector('.card-container');
+            const cards = document.querySelectorAll('.invitation-card');
+            const flipIcons = document.querySelectorAll('.flip-icon');
+            
+            // Set initial height to match content
+            function setCardHeight() {
+                const frontCard = document.querySelector('.invitation-card.front');
+                const backCard = document.querySelector('.invitation-card.back');
+                const frontHeight = frontCard.scrollHeight;
+                const backHeight = backCard.scrollHeight;
+                const maxHeight = Math.max(frontHeight, backHeight);
+                
+                frontCard.style.height = maxHeight + 'px';
+                backCard.style.height = maxHeight + 'px';
+                cardContainer.style.height = maxHeight + 'px';
+            }
+            
+            // Call on load and resize
+            setCardHeight();
+            window.addEventListener('resize', setCardHeight);
+            
+            // Make flip icons draggable
+            flipIcons.forEach(icon => {
+                let isDragging = false;
+                let clickedForFlip = false;
+                let startX, startY, startLeft, startTop;
+                
+                // Load saved position if available
+                const savedPosition = localStorage.getItem('flipIconPosition');
+                if (savedPosition) {
+                    const { left, top } = JSON.parse(savedPosition);
+                    icon.style.left = left + 'px';
+                    icon.style.top = top + 'px';
+                    icon.style.right = 'auto';
+                    icon.style.bottom = 'auto';
+                }
+                // If no saved position, keep the default 75% from left, bottom position
+                
+                icon.addEventListener('mousedown', function(e) {
+                    clickedForFlip = true;
+                    isDragging = false;
+                    
+                    // Record starting positions
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    
+                    // Get current position relative to card
+                    const iconRect = icon.getBoundingClientRect();
+                    const cardRect = icon.closest('.invitation-card').getBoundingClientRect();
+                    
+                    startLeft = iconRect.left - cardRect.left;
+                    startTop = iconRect.top - cardRect.top;
+                    
+                    e.preventDefault(); // Prevent default behavior
+                });
+                
+                // Mouse move event for desktop
+                document.addEventListener('mousemove', function(e) {
+                    if (clickedForFlip) {
+                        isDragging = true; // Now we're dragging
+                        
+                        const card = icon.closest('.invitation-card');
+                        const cardRect = card.getBoundingClientRect();
+                        
+                        // Calculate new position
+                        let left = startLeft + (e.clientX - startX);
+                        let top = startTop + (e.clientY - startY);
+                        
+                        // Constrain to card boundaries
+                        left = Math.max(0, Math.min(left, cardRect.width - icon.offsetWidth));
+                        top = Math.max(0, Math.min(top, cardRect.height - icon.offsetHeight));
+                        
+                        // Set new position
+                        icon.style.left = left + 'px';
+                        icon.style.top = top + 'px';
+                        icon.style.right = 'auto';
+                        icon.style.bottom = 'auto';
+                        
+                        // Save position to localStorage
+                        localStorage.setItem('flipIconPosition', JSON.stringify({ left, top }));
+                    }
+                });
+                
+                // Mouse up event to stop dragging
+                document.addEventListener('mouseup', function(e) {
+                    if (clickedForFlip) {
+                        if (!isDragging) {
+                            // It was just a click (not a drag), so flip the card
+                            cardContainer.classList.toggle('flipped');
+                        }
+                        
+                        clickedForFlip = false;
+                        isDragging = false;
+                    }
+                });
+                
+                // Touch events for mobile
+                icon.addEventListener('touchstart', function(e) {
+                    clickedForFlip = true;
+                    isDragging = false;
+                    
+                    // Record starting position
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    
+                    // Get current position relative to card
+                    const iconRect = icon.getBoundingClientRect();
+                    const cardRect = icon.closest('.invitation-card').getBoundingClientRect();
+                    
+                    startLeft = iconRect.left - cardRect.left;
+                    startTop = iconRect.top - cardRect.top;
+                    
+                    e.preventDefault(); // Prevent default behavior
+                });
+                
+                // Touch move event for mobile
+                document.addEventListener('touchmove', function(e) {
+                    if (clickedForFlip) {
+                        isDragging = true; // Now we're dragging
+                        
+                        const card = icon.closest('.invitation-card');
+                        const cardRect = card.getBoundingClientRect();
+                        
+                        // Calculate new position
+                        let left = startLeft + (e.touches[0].clientX - startX);
+                        let top = startTop + (e.touches[0].clientY - startY);
+                        
+                        // Constrain to card boundaries
+                        left = Math.max(0, Math.min(left, cardRect.width - icon.offsetWidth));
+                        top = Math.max(0, Math.min(top, cardRect.height - icon.offsetHeight));
+                        
+                        // Set new position
+                        icon.style.left = left + 'px';
+                        icon.style.top = top + 'px';
+                        icon.style.right = 'auto';
+                        icon.style.bottom = 'auto';
+                        
+                        // Save position to localStorage
+                        localStorage.setItem('flipIconPosition', JSON.stringify({ left, top }));
+                    }
+                }, { passive: false });
+                
+                // Touch end event to stop dragging on mobile
+                document.addEventListener('touchend', function(e) {
+                    if (clickedForFlip) {
+                        if (!isDragging) {
+                            // It was just a tap (not a drag), so flip the card
+                            cardContainer.classList.toggle('flipped');
+                        }
+                        
+                        clickedForFlip = false;
+                        isDragging = false;
+                    }
+                });
+            });
+            
+            // Add click event listener to both sides of the card
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Only flip if the click wasn't on the flip icon (already handled above)
+                    if (!e.target.closest('.flip-icon')) {
+                        cardContainer.classList.toggle('flipped');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
